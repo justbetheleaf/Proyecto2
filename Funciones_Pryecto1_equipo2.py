@@ -3,7 +3,7 @@ import copy
 """
 Jose Matamoros
 Mariana Torres
-Amanda Ramirez
+Amanda Ramirez v
 """
 "=======================================Funciones para que las funciones fundamentales sirvan============================================================"
 
