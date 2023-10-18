@@ -1,9 +1,6 @@
 from tkinter import *
 from datetime import datetime, timedelta
 
-#prueba
-
-#Avance Jose Matamorors
 # Función para actualizar el cronómetro
 def actualizar_cronometro():
     global tiempo_inicial, cronometro_corriendo
