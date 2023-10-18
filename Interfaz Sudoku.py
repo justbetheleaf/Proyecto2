@@ -161,5 +161,5 @@ boton_reiniciar_cronometro.grid(row=13, column=3)
 # Inicializar variables del cronómetro
 tiempo_inicial = None
 cronometro_corriendo = False
-"Hola"
+
 raiz.mainloop()
