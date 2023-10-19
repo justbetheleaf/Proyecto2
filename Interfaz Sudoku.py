@@ -146,8 +146,8 @@ boton_introduccion = Button(raiz, text="Introducción", command=boton_introducci
 boton_introduccion.grid(row=10, column=2)
 
 # Etiqueta para el cronómetro
-etiqueta_cronometro = Label(raiz,bg="deep sky blue",font=fuente, width=21, text="00:00:00")
-etiqueta_cronometro.grid(row=12, column=2)
+etiqueta_cronometro = Label(raiz,bg="deep sky blue",font=fuente, width=20, text="00:00:00")
+etiqueta_cronometro.grid(row=11, column=2)
 
 # Botones para controlar el cronómetro
 boton_iniciar_cronometro = Button(raiz,width=7,bg=boton_bg_color,font=fuente, text="Iniciar", command=iniciar_cronometro)
