@@ -34,8 +34,20 @@ def reiniciar_cronometro():
 
 # Función para iniciar el juego de Sudoku con el tamaño y dificultad seleccionados
 def iniciar_sudoku():
+    global cuadricula
+    global matrizResuelta
+    
+    global tabla
+    tabla.destroy() # limpia el frame para borrar los botones anteriores
+    tabla = Frame(raiz)
+    tabla.place(x=310, y=30)
+
+    global botonesSudoku
+    botonesSudoku = [] #limpia los botones para generarlos nuevamente
+
     selected_size = var_size.get()
     selected_difficulty = var_difficulty.get()
+    
     if selected_size == "Tamaño 4x4":
         if selected_difficulty == "Dificultad Fácil":
             matriz = iniciarMatriz(4)
@@ -133,6 +145,8 @@ def dibujarTabla9x9(cuadricula, tabla):
 
         botonesSudoku.append(filaBotones)
 
+    agregarBotonesNumeros(9)
+
 def dibujarTabla4x4(cuadricula, tabla):
     global botonesSudoku
     for i in range(4):
@@ -153,7 +167,43 @@ def dibujarTabla4x4(cuadricula, tabla):
 
         botonesSudoku.append(filaBotones)
 
+    agregarBotonesNumeros(4)
+    
+def agregarBotonesNumeros(size):
+    global botonesSudoku
+
+    def funcionAgregar(valor, size):
+        return lambda: agregarValor(valor, size)
+    
+    filaBotones = []
+    for i in range(size):
+        labelEspaciador = Label(tabla, height=1, text="",width=3,font=fuente)
+        labelEspaciador.grid(row=size, column=i, sticky=N)
+        boton = Button(tabla, text=str(i+1), width=3, height=1, font=("Arial", 16), bg="lightgray", command=funcionAgregar(i+1, size))
+        boton.grid(row=size+1, column=i, sticky=N)
+        filaBotones.append(labelEspaciador)
+        filaBotones.append(boton)
+    botonesSudoku.append(filaBotones)
+
+def agregarValor(valor, size):
+    global cuadricula
+    global matrizResuelta
+    global filaSelecionada
+    global columnaSelecionada
+    jugadaCorrecta = guardarJugada(cuadricula, matrizResuelta, filaSelecionada+1, columnaSelecionada+1, valor)
+    print(jugadaCorrecta)
+
+    if jugadaCorrecta:
+        botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, bg="#00C957", fg="#d1220a")
+    else:
+        botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, bg="#ff4c33", fg="#d1220a")
+
+
+
 def presionarBoton9x9(valor, fila, columna):
+    global filaSelecionada
+    global columnaSelecionada
+
     print(f"Click boton, tiene un valor de: {valor} en la fila: {fila} y columna: {columna}")
 
     for i in range(9): # Quitar el resalto de los botones
@@ -179,7 +229,13 @@ def presionarBoton9x9(valor, fila, columna):
 
     botonesSudoku[fila][columna].config(bg="yellow") # Resaltar celda
 
+    filaSelecionada = fila
+    columnaSelecionada = columna
+
 def presionarBoton4x4(valor, fila, columna):
+    global filaSelecionada
+    global columnaSelecionada
+
     print(f"Click boton, tiene un valor de: {valor} en la fila: {fila} y columna: {columna}")
 
     for i in range(4): # Quitar el resalto de los botones
@@ -204,15 +260,18 @@ def presionarBoton4x4(valor, fila, columna):
             botonesSudoku[i][j].config(bg="lightyellow")
 
     botonesSudoku[fila][columna].config(bg="yellow") # Resaltar celda
+    
+    filaSelecionada = fila
+    columnaSelecionada = columna
 
 
 "=================================================Interfaz gráfica====================================================================================="
 raiz = Tk()
 raiz.title("Sudoku")
-raiz.geometry("900x350")
+raiz.geometry("900x750")
 
 tabla = Frame(raiz)
-tabla.grid(row=2, column=5)
+tabla.place(x=310, y=30)
 
 # Ancho fijo para todos los botones
 #boton_width = 20
@@ -225,11 +284,12 @@ fuente = ("Arial", 12)
 
 # Etiqueta para "Controles"
 controles = Label(raiz, bg="deep sky blue", text="Controles",width=21,font=fuente)
-controles.grid(row=1, column=2,sticky="nw")
+controles.place(x=30, y=0)
 
 # Etiqueta para "Sudoku"
 sudoku = Label(raiz, bg="deep sky blue", text="Sudoku", width=60,font=fuente)
-sudoku.grid(row=1, column=4, columnspan=3)
+sudoku.place(x=300, y=0)
+# sudoku.grid(row=1, column=4, columnspan=3)
 
 # Lista de tamaños de Sudoku disponibles
 tamanos_sudoku = ["Tamaño 4x4", "Tamaño 9x9"]
@@ -239,7 +299,7 @@ var_size.set("Tamaño 4x4")  # Valor predeterminado
 # Menú desplegable para seleccionar el tamaño del Sudoku
 opcion_tamano = OptionMenu(raiz, var_size, *tamanos_sudoku)
 opcion_tamano.config(width=17,bg=boton_bg_color,font=fuente)  # Establecer el ancho igual al de los botones
-opcion_tamano.grid(row=2, column=2,sticky="nw")
+opcion_tamano.place(x=28, y=25)
 
 # Lista de dificultades
 dificultades = ["Dificultad Fácil", "Dificultad Intermedia", "Dificultad Difícil"]
@@ -248,50 +308,59 @@ var_difficulty.set("Dificultad Fácil")  # Valor predeterminado
 
 # Menú desplegable para seleccionar la dificultad
 opcion_dificultad = OptionMenu(raiz, var_difficulty, *dificultades)
-opcion_dificultad.config(width=17,bg=boton_bg_color,font=fuente)  # Establecer el ancho igual al de los botones
-opcion_dificultad.grid(row=4, column=2,sticky="nw")
+opcion_dificultad.config(width=17,bg=boton_bg_color,font=fuente)
+opcion_dificultad.place(x=28, y=55)  # Establecer el ancho igual al de los botones
 
 
 # Botón para nuevo juego de Sudoku con el tamaño y dificultad seleccionados
 boton_nuevo = Button(raiz, text="Nuevo Juego", command=boton_nuevo_click, width=20, bg=boton_bg_color,font=fuente)
-boton_nuevo.grid(row=5, column=2,sticky="nw")
+boton_nuevo.place(x=30, y=90)
 
 # Botón para borrar el juego
 boton_borrar = Button(raiz, text="Borrar Juego", command=boton_borrar_click, width=20, bg=boton_bg_color,font=fuente)
-boton_borrar.grid(row=6, column=2,sticky="nw")
+boton_borrar.place(x=30, y=125)
+# boton_borrar.grid(row=6, column=2,sticky="nw")
 
 # Botón para resolver el juego
 boton_resolver = Button(raiz, text="Resolver Juego", command=boton_resolver_click, width=20, bg=boton_bg_color,font=fuente)
-boton_resolver.grid(row=7, column=2,sticky="nw")
+boton_resolver.place(x=30, y=160)
 
 # Botón para guardar el juego
 boton_guardar = Button(raiz, text="Guardar Juego", command=boton_guardar_click, width=20, bg=boton_bg_color,font=fuente)
-boton_guardar.grid(row=8, column=2,sticky="nw")
+boton_guardar.place(x=30, y=195)
 
 # Botón para cargar el juego
 boton_cargar = Button(raiz, text="Cargar Juego", command=boton_cargar_click, width=20, bg=boton_bg_color,font=fuente)
-boton_cargar.grid(row=9, column=2,sticky="nw")
+boton_cargar.place(x=30, y=230)
 
 # Botón para mostrar la introducción
 boton_introduccion = Button(raiz, text="Introducción", command=boton_introduccion_click, width=20, bg=boton_bg_color,font=fuente)
-boton_introduccion.grid(row=10, column=2,sticky="nw")
+boton_introduccion.place(x=30, y=265)
 
 # Etiqueta para el cronómetro
 etiqueta_cronometro = Label(raiz,bg="deep sky blue",font=fuente, width=21, text="00:00:00")
-etiqueta_cronometro.grid(row=12, column=2,sticky="nw")
+etiqueta_cronometro.place(x=30, y=300)
 
 # Botones para controlar el cronómetro
 boton_iniciar_cronometro = Button(raiz,width=7,bg=boton_bg_color,font=fuente, text="Iniciar", command=iniciar_cronometro)
-boton_iniciar_cronometro.grid(row=13, column=1,sticky="nw")
+boton_iniciar_cronometro.place(x=30, y=330)
 
 boton_detener_cronometro = Button(raiz,width=8,bg=boton_bg_color ,font=fuente, text="Detener", command=detener_cronometro)
-boton_detener_cronometro.grid(row=13, column=2,sticky="nw")
+boton_detener_cronometro.place(x=105, y=330)
 
 boton_reiniciar_cronometro = Button(raiz,width=7,bg=boton_bg_color,font=fuente,text="Reiniciar", command=reiniciar_cronometro)
-boton_reiniciar_cronometro.grid(row=13, column=3,sticky="nw")
+boton_reiniciar_cronometro.place(x=189, y=330)
 
 # Inicializar variables del cronómetro
 tiempo_inicial = None
 cronometro_corriendo = False
+
+# Inicializar fila y columna seleccionada
+filaSelecionada = 0
+columnaSelecionada = 0
+
+# Inicializar matrices
+cuadricula = []
+matrizResuelta = []
 
 raiz.mainloop()
