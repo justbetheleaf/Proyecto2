@@ -1,6 +1,46 @@
 from tkinter import *
 from datetime import datetime, timedelta
 from Funciones_Pryecto1_equipo2 import *
+import pickle
+
+def guardar_partida():
+    global cuadricula
+    try:
+        # Abre un archivo en modo escritura binaria
+        with open("partida_sudoku.pkl", "wb") as archivo:
+            # Crea un diccionario con los datos de la partida a guardar
+            datos_partida = {
+                "cuadricula": cuadricula,  # Guarda la cuadrícula del juego
+                "matrizResuelta": matrizResuelta  # Guarda la matriz resuelta del juego
+            }
+            # Utiliza la biblioteca "pickle" para escribir los datos del diccionario en el archivo
+            pickle.dump(datos_partida, archivo)
+        # Muestra un mensaje de éxito en la consola
+        print("Partida guardada con éxito.")
+    except Exception as e:
+        # En caso de un error al guardar la partida, muestra un mensaje de error en la consola
+        print(f"Error al guardar la partida: {str(e)}")
+
+# Función para cargar una partida de Sudoku desde un archivo binario
+def cargar_partida():
+    global cuadricula, matrizResuelta
+    try:
+        # Abre un archivo en modo lectura binaria
+        with open("partida_sudoku.pkl", "rb") as archivo:
+            # Carga los datos de la partida desde el archivo
+            datos_partida = pickle.load(archivo)
+            cuadricula = datos_partida["cuadricula"]  # Actualiza la cuadrícula con los datos cargados
+            matrizResuelta = datos_partida["matrizResuelta"]  # Actualiza la matriz resuelta con los datos cargados
+        # Muestra un mensaje de éxito en la consola
+        print("Partida cargada con éxito.")
+        # Actualiza la interfaz gráfica para reflejar la partida cargada
+        if len(cuadricula) == 4:
+            dibujarTabla4x4(cuadricula, tabla)  # Llama a una función para dibujar un tablero de 4x4
+        elif len(cuadricula) == 9:
+            dibujarTabla9x9(cuadricula, tabla)  # Llama a una función para dibujar un tablero de 9x9
+    except Exception as e:
+        # En caso de un error al cargar la partida, muestra un mensaje de error en la consola
+        print(f"Error al cargar la partida: {str(e)}")
 
 # Función para actualizar el cronómetro
 def actualizar_cronometro():
@@ -326,11 +366,11 @@ boton_resolver = Button(raiz, text="Resolver Juego", command=boton_resolver_clic
 boton_resolver.place(x=30, y=160)
 
 # Botón para guardar el juego
-boton_guardar = Button(raiz, text="Guardar Juego", command=boton_guardar_click, width=20, bg=boton_bg_color,font=fuente)
+boton_guardar = Button(raiz, text="Guardar Juego", command=guardar_partida, width=20, bg=boton_bg_color,font=fuente)
 boton_guardar.place(x=30, y=195)
 
 # Botón para cargar el juego
-boton_cargar = Button(raiz, text="Cargar Juego", command=boton_cargar_click, width=20, bg=boton_bg_color,font=fuente)
+boton_cargar = Button(raiz, text="Cargar Juego", command=cargar_partida, width=20, bg=boton_bg_color,font=fuente)
 boton_cargar.place(x=30, y=230)
 
 # Botón para mostrar la introducción
