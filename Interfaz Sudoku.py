@@ -85,11 +85,9 @@ def iniciar_sudoku():
 def boton_nuevo_click():
     resultado = iniciar_sudoku()
     # Tratar el valor devuelto por el botón "Nuevo Juego"
-    print(resultado)
+    
 
 def boton_borrar_click():
-    global historial
-    print(historial)
     # Realizar operaciones para el botón "Borrar Juego"
     print("Borrar Juego")
 
@@ -214,7 +212,8 @@ def guardarHistorial(fila, columna, valor, jugadaCorrecta):
     else:
         mensajeJuscadaCorrecta = "el valor ingresado es incorrecto"
 
-    historial.append("En la casilla de la fila " + str(fila) + " y de la columna " + str(columna) + " se le ingresó el valor " + str(valor) + ", " + mensajeJuscadaCorrecta)
+    historial.append("En la casilla de la fila " + str(fila+1) + " y de la columna " + str(columna+1) + " se le ingresó el valor " + str(valor) + ", " + mensajeJuscadaCorrecta)
+    print(historial[-1])
 
 
 
@@ -223,7 +222,7 @@ def presionarBoton9x9(valor, fila, columna):
     global filaSelecionada
     global columnaSelecionada
 
-    print(f"Click boton, tiene un valor de: {valor} en la fila: {fila} y columna: {columna}")
+    #print(f"Click boton, tiene un valor de: {valor} en la fila: {fila} y columna: {columna}")
 
     for i in range(9): # Quitar el resalto de los botones
         for j in range(9):
@@ -255,7 +254,7 @@ def presionarBoton4x4(valor, fila, columna):
     global filaSelecionada
     global columnaSelecionada
 
-    print(f"Click boton, tiene un valor de: {valor} en la fila: {fila} y columna: {columna}")
+    #print(f"Click boton, tiene un valor de: {valor} en la fila: {fila} y columna: {columna}")
 
     for i in range(4): # Quitar el resalto de los botones
         for j in range(4):

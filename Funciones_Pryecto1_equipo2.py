@@ -251,11 +251,9 @@ def cerosRandom(matriz, numCeros): #Segun la cantidad de ceros(dificultad) busca
 def guardarJugada(matrizConCeros,matriz, fila, columna, valor): #Toma un valor y lo evalua con la la matriz original y si hay un espacio vacio en la matriz con con ceros y los sutituye en las coordenadas correspondientes
     if matrizConCeros[fila-1][columna-1]==0:
         if matriz[fila-1][columna-1]==valor:
-            print("\nEl valor es correcto\n")
             matrizConCeros[fila-1][columna-1] = valor
             return True
         else:
-            print("\nEl valor es incorrecto\n")
             return False
     else:
         print("\nLa posicion fila = " + str(fila) + " columna = " + str(columna) + " ya posee un valor, intenta de nuevo\n")
