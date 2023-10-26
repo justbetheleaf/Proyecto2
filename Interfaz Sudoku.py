@@ -222,8 +222,7 @@ def presionarBoton9x9(valor, fila, columna):
     global filaSelecionada
     global columnaSelecionada
 
-    #print(f"Click boton, tiene un valor de: {valor} en la fila: {fila} y columna: {columna}")
-
+    
     for i in range(9): # Quitar el resalto de los botones
         for j in range(9):
             if (i, j) != (fila, columna):
@@ -254,7 +253,7 @@ def presionarBoton4x4(valor, fila, columna):
     global filaSelecionada
     global columnaSelecionada
 
-    #print(f"Click boton, tiene un valor de: {valor} en la fila: {fila} y columna: {columna}")
+    
 
     for i in range(4): # Quitar el resalto de los botones
         for j in range(4):
