@@ -88,6 +88,8 @@ def boton_nuevo_click():
     print(resultado)
 
 def boton_borrar_click():
+    global historial
+    print(historial)
     # Realizar operaciones para el botón "Borrar Juego"
     print("Borrar Juego")
 
@@ -159,7 +161,7 @@ def dibujarTabla4x4(cuadricula, tabla):
                 return lambda: presionarBoton4x4(valor, fila, columna)
 
             if valorCelda != 0:
-                boton = Button(tabla, text=str(valorCelda), width=4, height=2, font=("Arial", 16), bg=colorCelda, command=colocarValores(valorCelda, i, j))
+                boton = Button(tabla, text=str(valorCelda),  textvariable=str(valorCelda), width=4, height=2, font=("Arial", 16), bg=colorCelda, command=colocarValores(valorCelda, i, j))
             else:
                 boton = Button(tabla, width=4, height=2, font=("Arial", 16), bg=colorCelda, command=colocarValores(None, i, j))
             boton.grid(row=i, column=j, sticky=E)
@@ -190,13 +192,30 @@ def agregarValor(valor, size):
     global matrizResuelta
     global filaSelecionada
     global columnaSelecionada
-    jugadaCorrecta = guardarJugada(cuadricula, matrizResuelta, filaSelecionada+1, columnaSelecionada+1, valor)
-    print(jugadaCorrecta)
+    if botonesSudoku[filaSelecionada][columnaSelecionada].cget("textvariable") == "":
+        jugadaCorrecta = guardarJugada(cuadricula, matrizResuelta, filaSelecionada+1, columnaSelecionada+1, valor)        
 
-    if jugadaCorrecta:
-        botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, bg="#00C957", fg="#d1220a")
+        if jugadaCorrecta:
+            botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, textvariable=valor, bg="#00C957", fg="#d1220a")
+            
+        else:
+            botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, bg="#ff4c33", fg="#d1220a")
+
+        guardarHistorial(filaSelecionada, columnaSelecionada, valor, jugadaCorrecta)
     else:
-        botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, bg="#ff4c33", fg="#d1220a")
+        print("La casilla en la fila " + str(filaSelecionada) + " y en la columna " + str(columnaSelecionada) + " ya tiene un valor")
+
+def guardarHistorial(fila, columna, valor, jugadaCorrecta):
+    global historial
+
+    mensajeJuscadaCorrecta = ""
+    if jugadaCorrecta:
+        mensajeJuscadaCorrecta = "el valor ingresado es correcto"
+    else:
+        mensajeJuscadaCorrecta = "el valor ingresado es incorrecto"
+
+    historial.append("En la casilla de la fila " + str(fila) + " y de la columna " + str(columna) + " se le ingresó el valor " + str(valor) + ", " + mensajeJuscadaCorrecta)
+
 
 
 
@@ -363,4 +382,7 @@ columnaSelecionada = 0
 cuadricula = []
 matrizResuelta = []
 
+historial = []
+
 raiz.mainloop()
+
