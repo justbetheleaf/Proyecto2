@@ -208,11 +208,11 @@ def guardarHistorial(fila, columna, valor, jugadaCorrecta):
 
     mensajeJuscadaCorrecta = ""
     if jugadaCorrecta:
-        mensajeJuscadaCorrecta = "el valor ingresado es correcto"
+        mensajeJuscadaCorrecta = "El valor ingresado es correcto"
     else:
-        mensajeJuscadaCorrecta = "el valor ingresado es incorrecto"
+        mensajeJuscadaCorrecta = "El valor ingresado es incorrecto"
 
-    historial.append("En la casilla de la fila " + str(fila+1) + " y de la columna " + str(columna+1) + " se le ingresó el valor " + str(valor) + ", " + mensajeJuscadaCorrecta)
+    historial.append("\nEn la casilla de la fila -> " + str(fila+1) + " y de la columna -> " + str(columna+1) + "\nSe ingresó el valor " + str(valor) + ". \n" + mensajeJuscadaCorrecta)
     print(historial[-1])
 
 
