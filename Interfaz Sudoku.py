@@ -184,6 +184,10 @@ def cargar_partida():
 def boton_introduccion_click():
     messagebox.showinfo("Introducción", "Bienvenido al sudoku")
     
+def partida_ganada(cuadricula): 
+    if matrizLlena(cuadricula):  # Comprueba si todos los espacios están llenos
+        messagebox.showinfo("¡Felicidades!", "Has ganado la partida")
+
 
 # --------------------------------------------------------------------- Sudoku Funciones ----------------------------------------------
 
@@ -273,6 +277,7 @@ def agregarValor(valor, size):
 
         if jugadaCorrecta:
             botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, textvariable=valor, bg="#00C957", fg="#d1220a")
+            partida_ganada(cuadricula)
             
         else:
             botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, bg="#ff4c33", fg="#d1220a")
