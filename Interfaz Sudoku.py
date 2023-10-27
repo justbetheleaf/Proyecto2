@@ -2,6 +2,144 @@ from tkinter import *
 from datetime import datetime, timedelta
 from Funciones_Pryecto1_equipo2 import *
 import pickle
+from tkinter import messagebox
+from copy import copy, deepcopy
+
+global cuadricula
+global cuadricula_original
+cuadricula_original = []
+cuadricula = []
+
+
+# Función para actualizar el cronómetro
+def actualizar_cronometro():
+    global tiempo_inicial, cronometro_corriendo
+    if cronometro_corriendo:
+        tiempo_actual = datetime.now()
+        tiempo_transcurrido = tiempo_actual - tiempo_inicial
+        tiempo_formateado = str(tiempo_transcurrido).split(".")[0]  # Formatear tiempo sin microsegundos
+        etiqueta_cronometro.config(text=tiempo_formateado)
+        raiz.after(1000, actualizar_cronometro)  # Actualizar cada segundo
+
+# Función para iniciar el cronómetro
+def iniciar_cronometro():
+    global tiempo_inicial, cronometro_corriendo
+    if not cronometro_corriendo:
+        tiempo_inicial = datetime.now()
+        cronometro_corriendo = True
+        actualizar_cronometro()
+
+# Función para detener el cronómetro
+def detener_cronometro():
+    global cronometro_corriendo
+    cronometro_corriendo = False
+
+# Función para reiniciar el cronómetro
+def reiniciar_cronometro():
+    global tiempo_inicial, cronometro_corriendo
+    tiempo_inicial = None
+    cronometro_corriendo = False
+    etiqueta_cronometro.config(text="00:00:00")
+
+# Función para iniciar el juego de Sudoku con el tamaño y dificultad seleccionados
+def iniciar_sudoku():
+    global cuadricula 
+    global matrizResuelta
+    global cuadricula_original
+    
+    
+    global tabla
+    tabla.destroy() # limpia el frame para borrar los botones anteriores
+    tabla = Frame(raiz)
+    tabla.place(x=310, y=30)
+
+    global botonesSudoku
+    botonesSudoku = [] #limpia los botones para generarlos nuevamente
+
+    selected_size = var_size.get()
+    selected_difficulty = var_difficulty.get()
+    
+    if selected_size == "Tamaño 4x4":
+        if selected_difficulty == "Dificultad Fácil":
+            matriz = iniciarMatriz(4)
+            matrizResuelta = resolver_sudoku(matriz)
+            cuadricula = cerosRandom(matrizResuelta, 8)            
+            dibujarTabla4x4(cuadricula, tabla)
+        elif selected_difficulty == "Dificultad Intermedia":
+            matriz = iniciarMatriz(4)
+            matrizResuelta = resolver_sudoku(matriz)
+            cuadricula = cerosRandom(matrizResuelta, 10)
+            dibujarTabla4x4(cuadricula, tabla)
+        elif selected_difficulty == "Dificultad Difícil":
+            matriz = iniciarMatriz(4)
+            matrizResuelta = resolver_sudoku(matriz)
+            cuadricula = cerosRandom(matrizResuelta, 12)
+            dibujarTabla4x4(cuadricula, tabla)
+    else:
+        if selected_difficulty == "Dificultad Fácil":
+            matriz = iniciarMatriz(9)
+            matrizResuelta = resolver_sudoku(matriz)
+            cuadricula = cerosRandom(matrizResuelta, 45)
+            dibujarTabla9x9(cuadricula, tabla)
+        elif selected_difficulty == "Dificultad Intermedia":
+            matriz = iniciarMatriz(9)
+            matrizResuelta = resolver_sudoku(matriz)
+            cuadricula = cerosRandom(matrizResuelta, 52)
+            dibujarTabla9x9(cuadricula, tabla)
+        elif selected_difficulty == "Dificultad Difícil":
+            matriz = iniciarMatriz(9)
+            matrizResuelta = resolver_sudoku(matriz)
+            cuadricula = cerosRandom(matrizResuelta, 59)
+            dibujarTabla9x9(cuadricula, tabla)
+
+    cuadricula_original = deepcopy(cuadricula)
+
+#Funciones para retornar resultados de los valores
+def boton_nuevo_click():
+    resultado = iniciar_sudoku() # Tratar el valor devuelto por el botón "Nuevo Juego"
+    
+
+
+def boton_borrar_click():
+    global cuadricula_original, cuadricula
+    global tabla
+    global botonesSudoku
+    
+    tabla.destroy() # limpia el frame para borrar los botones anteriores
+    tabla = Frame(raiz)
+    tabla.place(x=310, y=30)
+
+    botonesSudoku = [] #limpia los botones para generarlos nuevamente
+    cuadricula = deepcopy(cuadricula_original)
+
+    if len(cuadricula) == 4:
+        dibujarTabla4x4(cuadricula, tabla)
+    elif len(cuadricula) == 9:
+        dibujarTabla9x9(cuadricula, tabla)
+
+    print("Juego Borrado")
+
+
+
+def boton_resolver_click():
+    global matrizResuelta
+    global tabla
+    global botonesSudoku
+    
+    tabla.destroy() # limpia el frame para borrar los botones anteriores
+    tabla = Frame(raiz)
+    tabla.place(x=310, y=30)
+
+    botonesSudoku = [] #limpia los botones para generarlos nuevamente
+    cuadricula = deepcopy(cuadricula_original)
+
+    if len(matrizResuelta) == 4:
+        dibujarTabla4x4(matrizResuelta, tabla)
+    elif len(matrizResuelta) == 9:
+        dibujarTabla9x9(matrizResuelta, tabla)
+
+    print("Guardar Juego")
+
 
 def guardar_partida():
     global cuadricula
@@ -40,112 +178,12 @@ def cargar_partida():
             dibujarTabla9x9(cuadricula, tabla)  # Llama a una función para dibujar un tablero de 9x9
     except Exception as e:
         # En caso de un error al cargar la partida, muestra un mensaje de error en la consola
-        print(f"Error al cargar la partida: {str(e)}")
+        print(f"Error al cargar la partida: {str(e)}")    
 
-# Función para actualizar el cronómetro
-def actualizar_cronometro():
-    global tiempo_inicial, cronometro_corriendo
-    if cronometro_corriendo:
-        tiempo_actual = datetime.now()
-        tiempo_transcurrido = tiempo_actual - tiempo_inicial
-        tiempo_formateado = str(tiempo_transcurrido).split(".")[0]  # Formatear tiempo sin microsegundos
-        etiqueta_cronometro.config(text=tiempo_formateado)
-        raiz.after(1000, actualizar_cronometro)  # Actualizar cada segundo
-
-# Función para iniciar el cronómetro
-def iniciar_cronometro():
-    global tiempo_inicial, cronometro_corriendo
-    if not cronometro_corriendo:
-        tiempo_inicial = datetime.now()
-        cronometro_corriendo = True
-        actualizar_cronometro()
-
-# Función para detener el cronómetro
-def detener_cronometro():
-    global cronometro_corriendo
-    cronometro_corriendo = False
-
-# Función para reiniciar el cronómetro
-def reiniciar_cronometro():
-    global tiempo_inicial, cronometro_corriendo
-    tiempo_inicial = None
-    cronometro_corriendo = False
-    etiqueta_cronometro.config(text="00:00:00")
-
-# Función para iniciar el juego de Sudoku con el tamaño y dificultad seleccionados
-def iniciar_sudoku():
-    global cuadricula
-    global matrizResuelta
-    
-    global tabla
-    tabla.destroy() # limpia el frame para borrar los botones anteriores
-    tabla = Frame(raiz)
-    tabla.place(x=310, y=30)
-
-    global botonesSudoku
-    botonesSudoku = [] #limpia los botones para generarlos nuevamente
-
-    selected_size = var_size.get()
-    selected_difficulty = var_difficulty.get()
-    
-    if selected_size == "Tamaño 4x4":
-        if selected_difficulty == "Dificultad Fácil":
-            matriz = iniciarMatriz(4)
-            matrizResuelta = resolver_sudoku(matriz)
-            cuadricula = cerosRandom(matrizResuelta, 8)
-            dibujarTabla4x4(cuadricula, tabla)
-        elif selected_difficulty == "Dificultad Intermedia":
-            matriz = iniciarMatriz(4)
-            matrizResuelta = resolver_sudoku(matriz)
-            cuadricula = cerosRandom(matrizResuelta, 10)
-            dibujarTabla4x4(cuadricula, tabla)
-        elif selected_difficulty == "Dificultad Difícil":
-            matriz = iniciarMatriz(4)
-            matrizResuelta = resolver_sudoku(matriz)
-            cuadricula = cerosRandom(matrizResuelta, 12)
-            dibujarTabla4x4(cuadricula, tabla)
-    else:
-        if selected_difficulty == "Dificultad Fácil":
-            matriz = iniciarMatriz(9)
-            matrizResuelta = resolver_sudoku(matriz)
-            cuadricula = cerosRandom(matrizResuelta, 45)
-            dibujarTabla9x9(cuadricula, tabla)
-        elif selected_difficulty == "Dificultad Intermedia":
-            matriz = iniciarMatriz(9)
-            matrizResuelta = resolver_sudoku(matriz)
-            cuadricula = cerosRandom(matrizResuelta, 52)
-            dibujarTabla9x9(cuadricula, tabla)
-        elif selected_difficulty == "Dificultad Difícil":
-            matriz = iniciarMatriz(9)
-            matrizResuelta = resolver_sudoku(matriz)
-            cuadricula = cerosRandom(matrizResuelta, 59)
-            dibujarTabla9x9(cuadricula, tabla)
-
-#Funciones para retornar resultados de los valores
-def boton_nuevo_click():
-    resultado = iniciar_sudoku()
-    # Tratar el valor devuelto por el botón "Nuevo Juego"
-    
-
-def boton_borrar_click():
-    # Realizar operaciones para el botón "Borrar Juego"
-    print("Borrar Juego")
-
-def boton_resolver_click():
-    # Realizar operaciones para el botón "Resolver Juego"
-    print("Resolver Juego")
-
-def boton_guardar_click():
-    # Realizar operaciones para el botón "Guardar Juego"
-    print("Guardar Juego")
-
-def boton_cargar_click():
-    # Realizar operaciones para el botón "Cargar Juego"
-    print("Cargar Juego")
 
 def boton_introduccion_click():
-    # Realizar operaciones para el botón "Introducción"
-    print("Introducción")
+    messagebox.showinfo("Introducción", "Bienvenido al sudoku")
+    
 
 # --------------------------------------------------------------------- Sudoku Funciones ----------------------------------------------
 
