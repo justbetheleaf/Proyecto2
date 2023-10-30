@@ -230,8 +230,8 @@ Entrada: No tiene parámetros.
 Restricciones: Depende de la biblioteca messagebox de tkinter
 Salida: No retorna un valor.
 """
-def boton_introduccion_click():
-    messagebox.showinfo("Introducción", "Bienvenido al sudoku") #muestra un cuadro con la infomación suministrada, modúlo de tkinter
+def boton_instrucciones_click():
+    messagebox.showinfo("Introducción", "Instrucciones: \n\nPara empezar a jugar se deben presionar los botones para seleccionar el tipo de tamaño en el que se quiere jugar el Sudoku (4x4 o 9x9) y el nivel de dificultad (fácil, intermedio o difícil). Por último, se procede a crear la partida presionando “Nuevo Juego”.\n\nSe debe seleccionar el espacio a rellenar y escoger un número entre el 1-4 en el caso de ser 4x4 o del 1–9 en caso de ser un sudoku 9x9. La casilla se tornará color amarillo y se autoseleccionará la fila, columna y región.\n\nAl ingresar un número la casilla se tornará color verde en caso de ser correcto el número o color rojo en caso de ser incorrecto. El jugador debe tener en cuenta que siempre los valores seleccionados dentro de la casilla se tornarán en color rojo y podrá corregir o cambiar infinitas veces el número en la casilla. \n\nNota: No se podrán cambiar los números correctos. \n\nSi el jugador desea borrar los números ya ingresados deberá presionar “Borrar Juego”. \n\nSi el usuario quisiera ayuda para resolver la totalidad del Sudoku este tendrá la opción presionar “Resolver Juego” donde se mostrará la solución del Sudoku. \n\nPara guardar la partida iniciada y empezar otra se debe presionar el botón “Guardar Juego” donde se guardarán los valores en las casillas ya seleccionadas. \n\nEn caso de que el jugador desee jugar una nueva partida con números diferentes en el Sudoku, bastará con presionar el botón nuevo juego. \n\nSi el jugador quiere devolverse a la última partida jugada bastará con presionar “Cargar Juego” donde se debe aclarar que solo cargará la última partida jugada. \n\nSi quieres retarte a resolver el Sudoku seleccionado y poner a prueba sus habilidades, tendrás a disposición un cronómetro en la esquina derecha. Con funcionalidades como iniciar, detener el tiempo del cronómetro y reiniciarlo desde cero.\n\nDisfruta el juego 😊") #muestra un cuadro con la infomación suministrada, modúlo de tkinter
 
 
 """
@@ -513,8 +513,8 @@ boton_cargar = Button(raiz, text="Cargar Juego", command=cargar_partida, width=2
 boton_cargar.place(x=30, y=230)
 
 # Botón para mostrar la introducción
-boton_introduccion = Button(raiz, text="Introducción", command=boton_introduccion_click, width=20, bg=boton_bg_color,font=fuente)
-boton_introduccion.place(x=30, y=265)
+boton_instrucciones = Button(raiz, text="Instrucciones", command=boton_instrucciones_click, width=20, bg=boton_bg_color,font=fuente)
+boton_instrucciones.place(x=30, y=265)
 
 # Etiqueta para el cronómetro
 etiqueta_cronometro = Label(raiz,bg="deep sky blue",font=fuente, width=21, text="00:00:00")
