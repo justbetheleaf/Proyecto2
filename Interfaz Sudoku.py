@@ -198,7 +198,7 @@ def cargar_partida():
 Función Botón Introducción
 Muestra un cuadro con las instrucciones para jugar Sudoku.
 Entrada: No tiene parámetros.
-Restricciones: 
+Restricciones: Depende de la biblioteca messagebox de tkinter
 Salida: No retorna un valor.
 """
 def boton_introduccion_click():
@@ -209,7 +209,7 @@ def boton_introduccion_click():
 Función Partida ganada
 Muestra un cuadro con el mensaje de felicitación si el usuario ganó la partida de Sudoku.
 Entrada: No tiene parámetros.
-Restricciones: 
+Restricciones: Depende de la biblioteca messagebox de tkinter
 Salida: No retorna un valor.
 """
 def partida_ganada(cuadricula): 
@@ -269,6 +269,7 @@ def dibujarTabla4x4(cuadricula, tabla):
                 return lambda: presionarBoton4x4(valor, fila, columna)
 
             if valorCelda != 0:
+                # Se usa el textVairiable para hacer que los botones queden estaticos y no cambien al encontrar el correcto.
                 boton = Button(tabla, text=str(valorCelda),  textvariable=str(valorCelda), width=4, height=2, font=("Arial", 16), bg=colorCelda, command=colocarValores(valorCelda, i, j))
             else:
                 boton = Button(tabla, width=4, height=2, font=("Arial", 16), bg=colorCelda, command=colocarValores(None, i, j))
@@ -277,54 +278,74 @@ def dibujarTabla4x4(cuadricula, tabla):
 
         botonesSudoku.append(filaBotones)
 
-    agregarBotonesNumeros(4)
-    
+    agregarBotonesNumeros(4) 
+
 def agregarBotonesNumeros(size):
     global botonesSudoku
 
-    def funcionAgregar(valor, size):
-        return lambda: agregarValor(valor, size)
+    def funcionAgregar(valor):
+        return lambda: agregarValor(valor)
     
     filaBotones = []
     for i in range(size):
+
         labelEspaciador = Label(tabla, height=1, text="",width=3,font=fuente)
         labelEspaciador.grid(row=size, column=i, sticky=N)
-        boton = Button(tabla, text=str(i+1), width=3, height=1, font=("Arial", 16), bg="lightgray", command=funcionAgregar(i+1, size))
+        boton = Button(tabla, text=str(i+1), width=3, height=1, font=("Arial", 16), bg="lightgray", command=funcionAgregar(i+1))
         boton.grid(row=size+1, column=i, sticky=N)
         filaBotones.append(labelEspaciador)
         filaBotones.append(boton)
+
     botonesSudoku.append(filaBotones)
 
-def agregarValor(valor, size):
+
+"""
+Función Agregar Valor al sudoku
+Se encarga de agregar un valor numeral a un botón, comprando si el valor es correcto y actualiza valor al color verde, de lo contrario al color rojo en la interfaz.
+Entrada: Valor númerivo que el usuario agrega al sudoku.
+Restricciones: Valor entero positivo del 1 al 9.
+Salida: No retorna un valor.
+"""
+def agregarValor(valor): #se declaran las variables necesarias para la función
     global cuadricula
     global matrizResuelta
     global filaSelecionada
     global columnaSelecionada
-    if botonesSudoku[filaSelecionada][columnaSelecionada].cget("textvariable") == "":
-        jugadaCorrecta = guardarJugada(cuadricula, matrizResuelta, filaSelecionada+1, columnaSelecionada+1, valor)        
 
-        if jugadaCorrecta:
-            botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, textvariable=valor, bg="#00C957", fg="#d1220a")
-            partida_ganada(cuadricula)
+    if botonesSudoku[filaSelecionada][columnaSelecionada].cget("textvariable") == "": #verifica las posiciones de fila y columna selecionada del arreglo botonesSudoku para saber si tiene un valor vacío .
+        jugadaCorrecta = guardarJugada(cuadricula, matrizResuelta, filaSelecionada+1, columnaSelecionada+1, valor) #indica si la jugada es correcta o no y se guarda en jugadaCorrecta       
+
+        if jugadaCorrecta: #entonces si es correcta 
+            botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, textvariable=valor, bg="#00C957", fg="#d1220a") #se muestra el valor con fondo verde y el número rojo.
+            partida_ganada(cuadricula) # verifica si con la juagada se a ganado el sudoku 
             
-        else:
-            botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, bg="#ff4c33", fg="#d1220a")
+        else: #si no es correcta
+            botonesSudoku[filaSelecionada][columnaSelecionada].config(text=valor, bg="#ff4c33", fg="#d1220a") #se miestra el valor con fondo rojo y el número rojo oscuro. 
 
-        guardarHistorial(filaSelecionada, columnaSelecionada, valor, jugadaCorrecta)
+        guardarHistorial(filaSelecionada, columnaSelecionada, valor, jugadaCorrecta) #ya verificadas las jugadas se guarda en el hsitorial
+    else: #si ya se tiene un valor
+        print("La casilla en la fila " + str(filaSelecionada) + " y en la columna " + str(columnaSelecionada) + " ya tiene un valor") #si no se imprime un mensaje que ya hay un valor e la fila y columna respectiva
+
+"""
+Función Historial guardado
+Guarda la información de la fila, columna y valor ingresado por el usuario en una partida.
+Verifica si la jugada ingresada es correcta o no y da un mensaje.
+Entrada: Un número entero para fila, columna, valor ingresado y un booleano que indica sí es jugadaCorrecta o no.
+Restricciones: Fila, columna y valor deben ser enteros positivos y jugadaCorrecta un booleano.
+Salida: No retorna un valor pero modifica la variable "historial".
+"""
+def guardarHistorial(fila, columna, valor, jugadaCorrecta): 
+    global historial #la definimos global para poder modificarla dentro de esta función	
+
+    mensajeJusgadaCorrecta = "" #inicializar
+    if jugadaCorrecta: #si el número en jugada correcta es correcto tira el mensaje de lo contrario dice que es incorrecto.
+        mensajeJusgadaCorrecta = "El valor ingresado es correcto"
     else:
-        print("La casilla en la fila " + str(filaSelecionada) + " y en la columna " + str(columnaSelecionada) + " ya tiene un valor")
+        mensajeJusgadaCorrecta = "El valor ingresado es incorrecto"
 
-def guardarHistorial(fila, columna, valor, jugadaCorrecta):
-    global historial
-
-    mensajeJuscadaCorrecta = ""
-    if jugadaCorrecta:
-        mensajeJuscadaCorrecta = "El valor ingresado es correcto"
-    else:
-        mensajeJuscadaCorrecta = "El valor ingresado es incorrecto"
-
-    historial.append("\nEn la casilla de la fila -> " + str(fila+1) + " y de la columna -> " + str(columna+1) + "\nSe ingresó el valor " + str(valor) + ". \n" + mensajeJuscadaCorrecta)
-    print(historial[-1])
+    # Se agrega al historial de la jugada y se imprime la infomación de si la posición, el valor ingresado es correcto o no. 
+    historial.append("\nEn la casilla de la fila -> " + str(fila+1) + " y de la columna -> " + str(columna+1) + "\nSe ingresó el valor " + str(valor) + ". \n" + mensajeJusgadaCorrecta)
+    print(historial[-1])  #imprime el ultimo mensaje que se agregó al historial.
 
 
 
@@ -492,6 +513,7 @@ columnaSelecionada = 0
 cuadricula = []
 matrizResuelta = []
 
+#Inicializar el Historial 
 historial = []
 
 raiz.mainloop()
