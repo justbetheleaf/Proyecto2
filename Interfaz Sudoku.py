@@ -156,14 +156,26 @@ def boton_resolver_click():
 
 
 def guardar_partida():
-    global cuadricula
+    global cuadricula, cuadricula_original, matrizResuelta  #se declaran instancias a utilizar 
+
+    #obtiene los numero de la interfaz para guardarlos en matriz Usuario 
+    matrizUsuario = [[0 for _ in range(len(cuadricula))] for _ in range(len(cuadricula))] #valor inical son 0 
+    for fila in range(len(matrizUsuario)):
+        for columna in range(len(matrizUsuario)):  
+            if botonesSudoku[fila][columna].cget("text") != "":  #si esos valores son diferente a espacio vacio              
+                matrizUsuario[fila][columna] = botonesSudoku[fila][columna].cget("text") # si se cumple entonces asigna el texto del botón a la celda en matriz Usuario
+            else:
+                matrizUsuario[fila][columna] = "0" # de lo contrario se le asigna un cero
+    
     try:
         # Abre un archivo en modo escritura binaria
         with open("partida_sudoku.pkl", "wb") as archivo:
             # Crea un diccionario con los datos de la partida a guardar
             datos_partida = {
-                "cuadricula": cuadricula,  # Guarda la cuadrícula del juego
-                "matrizResuelta": matrizResuelta  # Guarda la matriz resuelta del juego
+                "cuadricula_original": cuadricula_original,  # Guarda la cuadrícula original del juego, para poder borrar partidas de juegos cargados
+                "cuadricula": cuadricula,  # Guarda la cuadrícula del juego, la cual contiene los valores correctos ingresados
+                "matrizResuelta": matrizResuelta,  # Guarda la matriz resuelta del juego
+                "matrizUsuario": matrizUsuario,  # Guarda la matriz ingresada por el usuario en la interfaz
             }
             # Utiliza la biblioteca "pickle" para escribir los datos del diccionario en el archivo
             pickle.dump(datos_partida, archivo)
@@ -175,21 +187,38 @@ def guardar_partida():
 
 # Función para cargar una partida de Sudoku desde un archivo binario
 def cargar_partida():
-    global cuadricula, matrizResuelta
+    global cuadricula, matrizResuelta, cuadricula_original, tabla, botonesSudoku
+    
+    tabla.destroy() # limpia el frame para borrar los botones anteriores
+    tabla = Frame(raiz)  #crear el nuevo frame del objeto y lo asigna a ña variable tabla
+    tabla.place(x=310, y=30)  #posición del frame desntro de la raíz (el contenedor)
+
+    botonesSudoku = [] #limpia los botones para generarlos nuevamente
+
     try:
         # Abre un archivo en modo lectura binaria
         with open("partida_sudoku.pkl", "rb") as archivo:
             # Carga los datos de la partida desde el archivo
             datos_partida = pickle.load(archivo)
             cuadricula = datos_partida["cuadricula"]  # Actualiza la cuadrícula con los datos cargados
+            cuadricula_original = datos_partida["cuadricula_original"]  # Actualiza la cuadrícula original con los datos cargados
             matrizResuelta = datos_partida["matrizResuelta"]  # Actualiza la matriz resuelta con los datos cargados
+            matrizUsuario = datos_partida["matrizUsuario"]  # Actualiza la matriz resuelta con los datos cargados
         # Muestra un mensaje de éxito en la consola
         print("Partida cargada con éxito.")
         # Actualiza la interfaz gráfica para reflejar la partida cargada
-        if len(cuadricula) == 4:
-            dibujarTabla4x4(cuadricula, tabla)  # Llama a una función para dibujar un tablero de 4x4
-        elif len(cuadricula) == 9:
-            dibujarTabla9x9(cuadricula, tabla)  # Llama a una función para dibujar un tablero de 9x9
+        if len(cuadricula_original) == 4:
+            dibujarTabla4x4(cuadricula_original, tabla)  # Llama a una función para dibujar un tablero de 4x4
+        elif len(cuadricula_original) == 9:
+            dibujarTabla9x9(cuadricula_original, tabla)  # Llama a una función para dibujar un tablero de 9x9
+        #Actualiza la interfaz con los valores ingresados por el usuario que no pertenecen a la matriz original
+        for fila in range(len(matrizUsuario)):
+            for columna in range(len(matrizUsuario)): #recorridos de filas y columnas para los numeros ingresados en matriz del usuario 
+                if(matrizUsuario[fila][columna] != "0" and matrizUsuario[fila][columna] != str(cuadricula_original[fila][columna])):  #pasa por las condicionesy la matriz del Usuario es diferente a la cuadricula original 
+                    if(matrizUsuario[fila][columna] == str(matrizResuelta[fila][columna])): #Valida entonces si el valor es correcto
+                        botonesSudoku[fila][columna].config(text=matrizUsuario[fila][columna], textvariable=matrizUsuario[fila][columna], fg="#d1220a") #se muestra el valor previamente ingresado por el usuario en rojo y se guarda en texvariable porque es un valor correcto.        
+                    else:  #si el valor es incorrecto
+                        botonesSudoku[fila][columna].config(text=matrizUsuario[fila][columna], fg="#d1220a") #se muestra el valor previamente ingresado por el usuario en rojo y no se guarda en texvariable porque es un valor incorrecto.                
     except Exception as e:
         # En caso de un error al cargar la partida, muestra un mensaje de error en la consola
         print(f"Error al cargar la partida: {str(e)}")    
