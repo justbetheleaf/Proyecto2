@@ -99,46 +99,60 @@ def boton_nuevo_click():
     resultado = iniciar_sudoku() # Tratar el valor devuelto por el botón "Nuevo Juego"
     
 
-
+"""
+Función Botón de borrar
+Reestableces la cuadricula del juego al estado original en el que se inicio la partida.
+Entrada: No tiene parámetros.
+Restricciones: El tamaño de las tablas deben ser de 4 o 9.
+Salida: No retorna un valor pero limpia y recrea el frame del juego.
+"""
 def boton_borrar_click():
-    global cuadricula_original, cuadricula
+    global cuadricula_original, cuadricula #declara las instancias globales a utilizar 
     global tabla
-    global botonesSudoku
+    global botonesSudoku #permite manipular la lista global de botones relacionados a el sudoku
     
-    tabla.destroy() # limpia el frame para borrar los botones anteriores
-    tabla = Frame(raiz)
-    tabla.place(x=310, y=30)
+    tabla.destroy() #limpia el frame para borrar los botones anteriores
+    tabla = Frame(raiz) #crear el nuevo frame del objeto y lo asigna a ña variable tabla
+    tabla.place(x=310, y=30) #posición del frame desntro de la raíz (el contenedor)
 
     botonesSudoku = [] #limpia los botones para generarlos nuevamente
-    cuadricula = deepcopy(cuadricula_original)
+    cuadricula = deepcopy(cuadricula_original) #hace un deepcopy para trabajar con este y no con una copia normal
 
-    if len(cuadricula) == 4:
-        dibujarTabla4x4(cuadricula, tabla)
+    if len(cuadricula) == 4: # verifica las longitudes de las cuadriculas
+        dibujarTabla4x4(cuadricula, tabla) #Si la condición aesverdadera llama a la función
     elif len(cuadricula) == 9:
         dibujarTabla9x9(cuadricula, tabla)
 
-    print("Juego Borrado")
+    print("Juego Borrado") #imprime el mensaje "Juego Borrado" en la consola
 
 
-
+"""
+Función Botón resolver Sudoku
+Se encarga de mostrar la solución al usuario de esa partida.
+Entrada: No tiene parámetros.
+Restricciones: El tamaño de las tablas deben ser de 4 o 9.
+Salida: No retorna un valor.
+"""
 def boton_resolver_click():
-    global matrizResuelta
+    global matrizResuelta  #declara las instancias globales a utilizar 
     global tabla
     global botonesSudoku
+    global cuadricula_original
     
     tabla.destroy() # limpia el frame para borrar los botones anteriores
-    tabla = Frame(raiz)
-    tabla.place(x=310, y=30)
+    tabla = Frame(raiz)  #crear el nuevo frame del objeto y lo asigna a ña variable tabla
+    tabla.place(x=310, y=30)  #posición del frame desntro de la raíz (el contenedor)
 
     botonesSudoku = [] #limpia los botones para generarlos nuevamente
     cuadricula = deepcopy(cuadricula_original)
 
-    if len(matrizResuelta) == 4:
+    if len(matrizResuelta) == 4:  # verifica las longitudes de las cuadriculas
         dibujarTabla4x4(matrizResuelta, tabla)
     elif len(matrizResuelta) == 9:
         dibujarTabla9x9(matrizResuelta, tabla)
 
-    print("Guardar Juego")
+    print("Guardar Juego") #imprime el mensaje "Guardar Juego" en la consola
+
 
 
 def guardar_partida():
@@ -180,13 +194,27 @@ def cargar_partida():
         # En caso de un error al cargar la partida, muestra un mensaje de error en la consola
         print(f"Error al cargar la partida: {str(e)}")    
 
-
+"""
+Función Botón Introducción
+Muestra un cuadro con las instrucciones para jugar Sudoku.
+Entrada: No tiene parámetros.
+Restricciones: 
+Salida: No retorna un valor.
+"""
 def boton_introduccion_click():
-    messagebox.showinfo("Introducción", "Bienvenido al sudoku")
-    
+    messagebox.showinfo("Introducción", "Bienvenido al sudoku") #muestra un cuadro con la infomación suministrada, modúlo de tkinter
+
+
+"""
+Función Partida ganada
+Muestra un cuadro con el mensaje de felicitación si el usuario ganó la partida de Sudoku.
+Entrada: No tiene parámetros.
+Restricciones: 
+Salida: No retorna un valor.
+"""
 def partida_ganada(cuadricula): 
-    if matrizLlena(cuadricula):  # Comprueba si todos los espacios están llenos
-        messagebox.showinfo("¡Felicidades!", "Has ganado la partida")
+    if matrizLlena(cuadricula):  # Comprueba si todos los espacios están llenos y correctos
+        messagebox.showinfo("¡Felicidades!", "Has ganado la partida")  #muestra un cuadro con la infomación suministrada, modúlo de tkinter
 
 
 # --------------------------------------------------------------------- Sudoku Funciones ----------------------------------------------
@@ -353,6 +381,7 @@ def presionarBoton4x4(valor, fila, columna):
     inicioFilaCuadrante = (fila // 2) * 2
     inicioColumnaCuadrante = (columna // 2) * 2
     finalFilaCuadrante = inicioFilaCuadrante + 2
+    
     finalColumnaCuadrante = inicioColumnaCuadrante + 2
 
     for i in range(inicioFilaCuadrante, finalFilaCuadrante): # Resaltar cuadrante
