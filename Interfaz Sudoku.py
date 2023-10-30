@@ -248,7 +248,7 @@ def partida_ganada(cuadricula):
 
 # --------------------------------------------------------------------- Sudoku Funciones ----------------------------------------------
 
-def iniciarMatriz(n):
+def iniciarMatriz(n): # Se crea una caudrícula 9x9 o 4x4 
     if n == 4:
         cuadricula = crearMatriz4x4()
     elif n == 9:
@@ -263,7 +263,13 @@ def colorCuadrantes9x9(i, j): # Colores que diferencian cada cuadrante en el sud
 def colorCuadrantes4x4(i, j): # Colores que diferencian cada cuadrante en el sudoku
     colores = ["lightgray", "sky blue"]
     return colores[(i // 2 + j // 2) % 2]
-
+"""
+La función dibujarTabla9x9 toma una cuadrícula de Sudoku y una tabla como entrada y 
+crea una interfaz gráfica para mostrar el Sudoku de 9x9 en la tabla 
+proporcionada. Crea botones para cada celda y asigna valores a las 
+celdas iniciales de la cuadrícula. Además, define las funciones a 
+ejecutar cuando se presionan los botones. Lo mismo pasa con la 4x4
+"""
 def dibujarTabla9x9(cuadricula, tabla):
     global botonesSudoku
     for i in range(9):
@@ -308,6 +314,12 @@ def dibujarTabla4x4(cuadricula, tabla):
         botonesSudoku.append(filaBotones)
 
     agregarBotonesNumeros(4) 
+
+""" La función agregarBotonesNumeros agrega botones numéricos en la parte inferior de la tabla. 
+El número de botones agregados depende del valor de size, en la función funcionAgregar se usa para 
+crear funciones anónimas que se comportan como controladores de eventos para los botones, se asegura que 
+los valores se utilicen al agregar números al juego, una función anónima recuerda el valor específico
+que se pasó como argumento. """
 
 def agregarBotonesNumeros(size):
     global botonesSudoku
@@ -410,11 +422,10 @@ def presionarBoton9x9(valor, fila, columna):
     filaSelecionada = fila
     columnaSelecionada = columna
 
-def presionarBoton4x4(valor, fila, columna):
+def presionarBoton4x4(valor, fila, columna): # Función para resaltar botones, cuadrantes, filas y columnas
     global filaSelecionada
     global columnaSelecionada
 
-    
 
     for i in range(4): # Quitar el resalto de los botones
         for j in range(4):
@@ -449,7 +460,7 @@ raiz = Tk()
 raiz.title("Sudoku")
 raiz.geometry("900x750")
 
-tabla = Frame(raiz)
+tabla = Frame(raiz) # Para pintar el sudoku en consola
 tabla.place(x=310, y=30)
 
 # Ancho fijo para todos los botones
